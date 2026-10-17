@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>WASSYL na Shopify</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Układ: monochromatyczny jak sklep WASSYL, wersaliki z rozstrzeleniem w nagłówkach, karty problemów ze zrzutem obok tekstu, A4 do wydruku */
+:root{
+  --bg:#FBFBFA;
+  --paper:#FFFFFF;
+  --ink:#1A1A1A;
+  --muted:#5E5C58;
+  --line:#E4E2DE;
+  --soft:#F2F1EE;
+  --black:#000000;
+  --high:#B3261E;      /* waga: wysoka */
+  --high-bg:#FBEAE8;
+  --mid:#8A5A00;       /* waga: średnia */
+  --mid-bg:#FBF1DC;
+  --low:#4B4B4B;       /* waga: drobna */
+  --low-bg:#EDEDED;
+  --good:#1F6B45;
+  --good-bg:#E5F2EA;
+  --display:"Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --body:"Figtree", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;margin:0}
+.wrap{max-width:980px;margin:0 auto;padding-inline:20px;padding-block:0 64px}
+h1,h2,h3,.eyebrow,.chip,.btnlike,th{font-family:var(--display)}
+h1,h2,h3{text-wrap:balance;margin:0}
+h2{font-size:clamp(22px,3.2vw,30px);font-weight:600;text-transform:uppercase;letter-spacing:.06em;line-height:1.25}
+h3{font-size:17px;font-weight:600;line-height:1.35}
+p{margin:0}
+.prose{max-width:68ch;display:grid;gap:14px}
+.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:500}
+section{padding-block:56px;border-top:1px solid var(--line);display:grid;gap:24px}
+section.first{border-top:0}
+.num{font-variant-numeric:tabular-nums}
+a{color:var(--ink);text-underline-offset:3px}
+
+/* okładka */
+.cover{padding-block:56px 48px;display:grid;gap:28px}
+.logo{background:var(--black);display:inline-flex;padding:18px 26px;justify-self:start}
+.logo img{height:30px;width:auto;display:block}
+.cover h1{font-size:clamp(30px,5.4vw,52px);font-weight:600;text-transform:uppercase;letter-spacing:.04em;line-height:1.1;max-width:18ch}
+.cover .lead{font-size:19px;max-width:58ch;color:var(--ink)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 28px;font-size:13px;color:var(--muted);border-top:1px solid var(--ink);padding-top:14px}
+.meta b{color:var(--ink);font-weight:600}
+
+/* zamówienie */
+.order{background:var(--paper);border:1px solid var(--line);display:grid;grid-template-columns:1fr;gap:0}
+.order-row{display:grid;grid-template-columns:1fr auto;gap:16px;padding:12px 18px;border-top:1px solid var(--line);font-size:15px}
+.order-row:first-child{border-top:0}
+.order-row span:last-child{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.order-head{font-family:var(--display);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:12px 18px;background:var(--soft)}
+
+.quote{border-left:3px solid var(--ink);padding:4px 0 4px 18px;font-size:19px;line-height:1.5;max-width:60ch}
+
+/* liczby */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.stat{background:var(--paper);padding:20px;display:grid;gap:6px;align-content:start}
+.stat .big{font-family:var(--display);font-size:34px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.stat p{font-size:14px;color:var(--muted)}
+.src{font-size:12px;color:var(--muted)}
+
+/* listy plusów */
+.keep{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.keep div{background:var(--paper);border:1px solid var(--line);padding:16px 18px;font-size:15px}
+.keep b{display:block;font-family:var(--display);font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+
+/* pomiar szybkości */
+.bars{display:grid;gap:10px;background:var(--paper);border:1px solid var(--line);padding:20px}
+.bar{display:grid;grid-template-columns:minmax(120px,190px) 1fr 44px;gap:12px;align-items:center;font-size:14px}
+.track{height:12px;background:var(--soft);position:relative}
+.fill{height:100%;background:var(--ink)}
+.fill.bad{background:var(--high)}
+.fill.mid{background:var(--mid)}
+.bar .v{font-family:var(--display);font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.legend{font-size:12px;color:var(--muted)}
+
+/* grupy i karty problemów */
+.group-title{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:12px}
+.group-title h3{font-size:14px;letter-spacing:.18em;text-transform:uppercase}
+.group-title span{font-size:13px;color:var(--muted)}
+.issue{background:var(--paper);border:1px solid var(--line);display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:0}
+.issue.wide{grid-template-columns:1fr}
+.issue .body{padding:22px 24px;display:grid;gap:14px;align-content:start;min-width:0}
+.issue .shot{background:var(--soft);border-left:1px solid var(--line);padding:14px;display:grid;gap:8px;align-content:start}
+.issue.wide .shot{border-left:0;border-top:1px solid var(--line)}
+.shot img{width:100%;height:auto;display:block;border:1px solid var(--line)}
+.shot .cap{font-size:12px;color:var(--muted);line-height:1.4}
+.shot.pair{grid-template-columns:1fr 1fr}
+.shot.pair .cap{grid-column:1 / -1}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;padding:4px 8px;line-height:1.2}
+.chip.h{background:var(--high-bg);color:var(--high)}
+.chip.m{background:var(--mid-bg);color:var(--mid)}
+.chip.l{background:var(--low-bg);color:var(--low)}
+.chip.dev{background:var(--soft);color:var(--ink);font-weight:500}
+.rows{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;font-size:15px}
+.row>b{font-family:var(--display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding-top:4px;color:var(--muted);font-weight:600}
+.row.fix>b{color:var(--good)}
+.row.fix>div{background:var(--good-bg);padding:10px 12px}
+.row .src{display:block;margin-top:4px}
+
+/* funkcje */
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.feature{background:var(--paper);border:1px solid var(--line);padding:20px;display:grid;gap:8px;align-content:start}
+.feature h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em}
+.feature p{font-size:15px}
+.feature .why{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
+
+/* tabele */
+.tbl{overflow-x:auto;border:1px solid var(--line);background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th,td{text-align:left;padding:11px 14px;border-top:1px solid var(--line);vertical-align:top}
+th{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--muted);background:var(--soft);border-top:0}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.total td{font-weight:600;background:var(--soft)}
+
+.callout{background:var(--paper);border:1px solid var(--ink);padding:18px 20px;display:grid;gap:8px;max-width:76ch}
+.callout b.t{font-family:var(--display);font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+
+/* case */
+.case{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.case div{background:var(--paper);padding:18px}
+.case .big{font-family:var(--display);font-size:28px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.case p{font-size:13.5px;color:var(--muted);margin-top:4px}
+
+/* oś czasu */
+.timeline{display:grid;gap:0;border:1px solid var(--line);background:var(--paper)}
+.step{display:grid;grid-template-columns:130px minmax(0,1fr);gap:16px;padding:16px 20px;border-top:1px solid var(--line)}
+.step:first-child{border-top:0}
+.step .when{font-family:var(--display);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.step p{font-size:15px}
+.step p+p{color:var(--muted);font-size:14px;margin-top:2px}
+
+/* kontakt */
+.cta{background:var(--black);color:#FFFFFF;padding:36px 32px;display:grid;gap:16px}
+.cta h2{color:#FFFFFF}
+.cta p{color:#D9D9D9;max-width:62ch}
+.cta .contact{font-family:var(--display);font-size:15px;letter-spacing:.06em;color:#FFFFFF;display:grid;gap:4px}
+.todo{background:#FFF3B0;color:#1A1A1A;padding:0 4px}
+
+.sources{font-size:12.5px;color:var(--muted);columns:2 300px;column-gap:28px}
+.sources p{break-inside:avoid;margin-bottom:6px}
+
+@media (max-width:720px){
+  .issue{grid-template-columns:1fr}
+  .issue .shot{border-left:0;border-top:1px solid var(--line)}
+  .issue .shot:not(.pair) img{max-width:260px}
+  .row{grid-template-columns:1fr;gap:4px}
+  .step{grid-template-columns:1fr;gap:4px}
+  .bar{grid-template-columns:1fr 44px}
+  .bar .track{grid-column:1 / -1;grid-row:2}
+  .issue .body{padding:18px}
+}
+@media print{
+  @page{size:A4;margin:14mm 12mm}
+  body{background:#FFFFFF;font-size:11.5pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .issue .shot:not(.pair) img{max-width:none}
+  h2,h3,.eyebrow,.group-title,.prose{break-after:avoid}
+  .order,.stats,.keep,.bars,.tbl,.case,.timeline,.cta{break-inside:avoid}
+  section.pb{break-before:page}
+  .case{grid-template-columns:repeat(4,1fr)}
+  section{display:block}
+  section>*+*{margin-top:18px}
+  .group-title{margin-top:30px!important}
+  .issue{break-inside:avoid;page-break-inside:avoid;display:flex!important;flex-direction:row}
+  .issue.wide{flex-direction:column}
+  .group-title.nb{break-before:page;margin-top:0!important}
+  .issue .body{flex:1 1 auto}
+  .issue:not(.wide) .shot{flex:0 0 200px;border-left:1px solid var(--line);border-top:0}
+  h1,h2,h3,p,.row{break-inside:avoid;orphans:3;widows:3}
+  h2,h3,.eyebrow,.group-title{page-break-after:avoid}
+  .cover{padding-block:24px 32px}
+  .wrap{max-width:none;padding:0}
+  section{padding-block:28px}
+  .issue,.feature,.stat,.step,.callout,.case div,.keep div{break-inside:avoid}
+  .todo{background:none}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="cover">
+    <div class="logo"><img src="img/logo.png" alt="WASSYL"></div>
+    <p class="eyebrow">Propozycja współpracy · migracja i nowy sklep</p>
+    <h1>Nowy sklep WASSYL na Shopify</h1>
+    <p class="lead">Odświeżony design, wygodny telefon i funkcje, które podnoszą wartość koszyka. Przygotowałem ten dokument jako Wasz klient i jako developer Shopify: opisuję, co sam przeszedłem w sklepie, co pokazał audyt i jak to rozwiązać przy przenosinach z IdoSell.</p>
+    <div class="meta">
+      <span><b>Igor Pieczyński</b> · Shopify developer</span>
+      <span>Pomiary z 17.10.2026</span>
+      <span>Telefon (390 px) i komputer (1440 px)</span>
+    </div>
+  </header>
+
+  <!-- 1 -->
+  <section class="first">
+    <p class="eyebrow">Skąd ta propozycja</p>
+    <h2>Kupuję u Was, bo jakość jest świetna. Telefon prawie mnie od tego odwiódł</h2>
+    <div class="prose">
+      <p>Zamawiałem w WASSYL kilka razy: dwa komplety dresowe (szary i czarny), a potem prezenty dla mojej dziewczyny. Jedno z tych zamówień wyglądało tak:</p>
+    </div>
+    <div class="order">
+      <div class="order-head">Jedno z moich zamówień · 6 produktów · darmowa dostawa</div>
+      <div class="order-row"><span>Bluzka z dekoltem typu łódka, czekoladowa X504 · XS/S</span><span>62,99 zł</span></div>
+      <div class="order-row"><span>Spodnie luźne z prążkowanej dzianiny, czekoladowe X507</span><span>89,99 zł</span></div>
+      <div class="order-row"><span>Spodnie o kroju barrel, czekoladowe X561</span><span>102,46 zł</span></div>
+      <div class="order-row"><span>Bluza baggy z kangurką i kapturem, dark chocolate X562</span><span>119,53 zł</span></div>
+      <div class="order-row"><span>Komplet: długi oversizowy t-shirt i krótkie spodenki, czarny X735</span><span>79,99 zł</span></div>
+      <div class="order-row"><span>Sukienka / kombinezon w kratę, czekoladowa X817</span><span>170,99 zł</span></div>
+      <div class="order-row"><span><b>Razem</b></span><span><b>625,95 zł</b></span></div>
+    </div>
+    <div class="prose">
+      <p>Za każdym razem kupowałem na telefonie i za każdym razem było trudno. Menu nie pokazuje typów ubrań od razu, komplety są w kilku różnych miejscach, a żeby znaleźć konkretną bluzę albo spodnie, trzeba się naklikać. Wracam, bo znam Waszą jakość i wiem, że warto się przemęczyć.</p>
+    </div>
+    <p class="quote">Nowa klientka, która trafia do Was z TikToka, tej wiedzy jeszcze nie ma. Jeśli w pierwszej minucie nie znajdzie kompletu i nie zobaczy, ile kosztuje dostawa, po prostu zamknie kartę.</p>
+    <div class="stats">
+      <div class="stat"><span class="big">77%</span><p>ruchu w sklepach odzieżowych i retailu w 2025 roku pochodziło z telefonów</p><span class="src">Contentsquare, 2026 Digital Experience Benchmarks</span></div>
+      <div class="stat"><span class="big">79%</span><p>polskich kupujących online robi zakupy na smartfonie, a około 7 na 10 z nich ma przy tym trudności</p><span class="src">Gemius, E-commerce w Polsce 2024</span></div>
+      <div class="stat"><span class="big">70%</span><p>koszyków w e-commerce zostaje porzuconych; lepszy projekt koszyka i kasy może podnieść konwersję dużego sklepu o 35%</p><span class="src">Baymard Institute, 2025 (średnia z 50 badań)</span></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <p class="eyebrow">Co zostaje</p>
+    <h2>Macie mocne fundamenty, które przeniosę 1:1</h2>
+    <div class="prose"><p>Nowy sklep nie zaczyna od zera. Te elementy działają dobrze i w nowej wersji zostaną albo zostaną wzmocnione:</p></div>
+    <div class="keep">
+      <div><b>Rozpoznawalna estetyka</b>Street style we Wrocławiu, dużo wideo, czysty czarno-biały interfejs. To Wasz wyróżnik i zostaje.</div>
+      <div><b>Szyte w Polsce</b>Własna szwalnia to argument, który dziś jest schowany. W nowym sklepie będzie widoczny przy każdym produkcie.</div>
+      <div><b>Dobre opinie</b>Średnia 4,8 przy ponad 600 opiniach. Przeniosę je wszystkie i pokażę tam, gdzie klientka podejmuje decyzję.</div>
+      <div><b>Kasa bez zakładania konta</b>Zakup jako gość, BLIK, Apple Pay, Google Pay, PayPo. Na Shopify dochodzi Shop Pay.</div>
+      <div><b>Pasek do darmowej dostawy</b>Komunikat „brakuje Ci 109,01 zł” po dodaniu do koszyka jest bardzo dobry. Rozbuduję go o produkty, które domykają próg.</div>
+      <div><b>Strony zestawów</b>Cena zestawu obok ceny „poza zestawem” dobrze sprzedaje. W nowym sklepie zestaw będzie dostępny prosto z karty bluzy.</div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="pb">
+    <p class="eyebrow">Audyt · szybkość</p>
+    <h2>Strona główna waży 53 MB, a lista bluz na telefonie ma 19 punktów na 100</h2>
+    <div class="prose">
+      <p>PageSpeed Insights to narzędzie Google, które ocenia szybkość strony w skali 0 do 100. Wynik poniżej 50 Google oznacza jako słaby. Zmierzyłem trzy najważniejsze typy stron:</p>
+    </div>
+    <div class="bars" role="img" aria-label="Wyniki PageSpeed na telefonie i komputerze">
+      <div class="bar"><span>Lista bluz · telefon</span><div class="track"><div class="fill bad" style="width:19%"></div></div><span class="v">19</span></div>
+      <div class="bar"><span>Strona główna · komputer</span><div class="track"><div class="fill bad" style="width:43%"></div></div><span class="v">43</span></div>
+      <div class="bar"><span>Strona główna · telefon</span><div class="track"><div class="fill bad" style="width:48%"></div></div><span class="v">48</span></div>
+      <div class="bar"><span>Lista bluz · komputer</span><div class="track"><div class="fill mid" style="width:59%"></div></div><span class="v">59</span></div>
+      <div class="bar"><span>Karta bluzy X562 · telefon</span><div class="track"><div class="fill mid" style="width:65%"></div></div><span class="v">65</span></div>
+      <div class="bar"><span>Karta bluzy X562 · komputer</span><div class="track"><div class="fill mid" style="width:66%"></div></div><span class="v">66</span></div>
+      <p class="legend">Czerwony: poniżej 50 (słaby). Pomarańczowy: 50 do 89 (do poprawy). Pomiar laboratoryjny PageSpeed Insights, 17.10.2026.</p>
+    </div>
+    <div class="issue wide">
+      <div class="body">
+        <div class="chips"><span class="chip h">Waga wysoka</span><span class="chip dev">Telefon i komputer</span></div>
+        <h3>Strona główna pobiera to samo wideo w wersji na telefon i na komputer naraz</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Strona główna waży 53,6 MB na telefonie i 49,6 MB na komputerze, bo ładuje wideo z pierwszego ekranu w czterech plikach (wersja mobilna i desktopowa, dwa formaty), plus dwa kolejne wideo niżej. Na telefonie główna treść pojawia się po 16,6 s w teście z ograniczonym łączem. Na liście bluz serwer odpowiada średnio po 1,7 s, zanim cokolwiek się pokaże.</div></div>
+          <div class="row"><b>Skutek</b><div>Na słabszym zasięgu klientka patrzy na pusty ekran i pobiera dziesiątki megabajtów ze swojego pakietu. W badaniu Deloitte dla Google przyspieszenie stron mobilnych o 0,1 s dało sklepom odzieżowym i retailowym 8,4% więcej konwersji.<span class="src">Deloitte i Google, Milliseconds Make Millions, 2020 (37 marek, poprawa całej ścieżki zakupu)</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Na Shopify sklep działa na globalnej sieci serwerów (CDN), więc czas odpowiedzi serwera przestaje być problemem. Wideo przygotuję tak, żeby każde urządzenie pobierało tylko swoją wersję, a pierwszy ekran pokazywał od razu lekki kadr. Fonty jako jeden lekki plik zamiast dwóch kopii Montserrata.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="pb">
+    <p class="eyebrow">Audyt · problemy i rozwiązania</p>
+    <h2>Największe straty są, zanim klientka w ogóle trafi na produkt</h2>
+    <div class="prose">
+      <p>Przeszedłem sklep tak jak klientka: od strony głównej, przez menu i wyszukiwarkę, listy kategorii, karty produktów, aż do kasy (bez składania zamówienia). Każdy problem ma zrzut ekranu albo pomiar. Przy każdym podaję, co widać, jak wpływa na sprzedaż (z badaniem, jeśli takie istnieje) i jak go rozwiążę.</p>
+      <p class="src">Waga: <b>wysoka</b> dotyczy większości klientek i blokuje zakup, <b>średnia</b> utrudnia go, <b>drobna</b> obniża zaufanie.</p>
+    </div>
+
+    <div class="group-title nb"><h3>Menu i wyszukiwarka</h3><span>to, co mnie samego zniechęcało</span></div>
+
+    <div class="issue">
+      <div class="body">
+        <div class="chips"><span class="chip h">Waga wysoka</span><span class="chip dev">Telefon i komputer</span></div>
+        <h3>W menu nie ma żadnej kategorii ubrań na pierwszym poziomie, a komplety są w czterech różnych miejscach</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Po otwarciu menu widać 7 pozycji: Nowości, Bestsellery, Odzież, Karta podarunkowa, Promocja, Lookbook, Obsługa Klienta. Wszystkie typy ubrań są schowane pod „Odzież”, czyli listą 15 pozycji, w której typy (bluzy, spodnie) mieszają się z materiałem (Sztruks) i czterema rodzajami kompletów (dresowe długie, mix &amp; match, zwiewne, dresowe krótkie). Zbiorcza kategoria „Komplety damskie” istnieje, ale nie ma jej w menu. Do bluzy z kapturem prowadzą 4 dotknięcia, do spodni barrel 6. Na komputerze menu też jest schowane za ikoną, mimo dużej ilości miejsca.</div></div>
+          <div class="row"><b>Skutek</b><div>Klientka, która przychodzi po komplet, musi zgadywać, którą z czterech nazw wybrać. W badaniach Baymard Institute większość uczestników czuła się przytłoczona listą powyżej około 10 podkategorii, a część zamykała menu bez wyboru.<span class="src">Baymard Institute, Homepage and Category Navigation UX, 2026</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Pierwszy poziom = typy ubrań: Komplety, Bluzy, Spodnie, Sukienki i kombinezony, Topy, Okrycia, plus Nowości i Wyprzedaż. Wszystkie komplety w jednej kategorii z filtrem „rodzaj kompletu”. Każda gałąź zaczyna się od „Zobacz wszystkie”. Menu na telefonie z miniaturami zdjęć, na komputerze widoczne od razu jako mega menu. Sztruks czy „Na imprezę” jako kolekcje tematyczne na stronie głównej, nie w drzewie kategorii.</div></div>
+        </div>
+      </div>
+      <div class="shot pair">
+        <img src="img/m-02-menu-poziom-1.jpg" alt="Menu na telefonie, pierwszy poziom: 7 pozycji bez kategorii ubrań" loading="lazy">
+        <img src="img/m-03-menu-odziez-poziom-2.jpg" alt="Menu Odzież: 15 pozycji, komplety w czterech miejscach" loading="lazy">
+        <span class="cap">Telefon: pierwszy poziom menu i lista „Odzież”</span>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="body">
+        <div class="chips"><span class="chip m">Waga średnia</span><span class="chip dev">Telefon</span></div>
+        <h3>Jedna literówka w wyszukiwarce kończy się komunikatem „Nie znaleźliśmy takiej strony”</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Zapytania „komplet dresowy” czy „bluza baggy” dają trafne podpowiedzi ze zdjęciem i ceną (to działa dobrze). Ale „bluza bagy” prowadzi na stronę błędu bez żadnego produktu. W podpowiedziach kategorii pojawiają się techniczne wpisy, np. „Producent: WASSYL” i dwa razy „Wszystkie”, a link „Swetry” prowadzi do pustej strony.</div></div>
+          <div class="row"><b>Skutek</b><div>Na telefonie literówki są codziennością, a komunikat o błędzie wygląda jak awaria sklepu. 28% sklepów nie radzi sobie z literówkami w wyszukiwarce.<span class="src">Baymard Institute, Mobile UX Trends, 2026</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Wyszukiwarka Shopify z listą synonimów (bagy i baggy, barrel, dres i komplet). Strona „brak wyników” z bestsellerami i kategoriami zamiast błędu. W podpowiedziach tylko prawdziwe kategorie.</div></div>
+        </div>
+      </div>
+      <div class="shot">
+        <img src="img/m-11-literowka-blad.jpg" alt="Wynik wyszukiwania bluza bagy: strona błędu">
+        <span class="cap">Telefon: wynik dla „bluza bagy”</span>
+      </div>
+    </div>
+
+    <div class="group-title"><h3>Strona główna</h3></div>
+
+    <div class="issue">
+      <div class="body">
+        <div class="chips"><span class="chip h">Waga wysoka</span><span class="chip dev">Telefon i komputer</span></div>
+        <h3>Strona główna pokazuje klimat marki, ale nie produkty, ceny ani powody, by zaufać sklepowi</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Pierwszy ekran to wideo „NOWY DROP”. Pod nim karuzela produktów, w której nazwy i ceny są ukryte (widać same zdjęcia). Sekcja „Bestsellery” to baner bez ani jednego produktu. Pierwsze kafelki kategorii zaczynają się na telefonie około trzech ekranów niżej. Nigdzie na stronie głównej nie ma informacji o darmowej dostawie, zwrotach ani o ocenie sklepu, a strona nie ma nagłówka H1 (ważnego dla Google).</div></div>
+          <div class="row"><b>Skutek</b><div>Przy pierwszej wizycie w nowym sklepie Polacy najczęściej szukają opinii o sklepie (41%) i jasnej informacji o zwrotach (28%).<span class="src">Gemius, E-commerce w Polsce 2024</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Wideo zostaje, ale zajmuje około 60% ekranu, a pod nim jest przewijany pasek kategorii (Komplety, Bluzy, Spodnie, Sukienki, Nowości). Karuzele z nazwą, ceną i próbkami kolorów. Pasek korzyści: darmowa dostawa od 249 zł, zwroty, szyte w Polsce. Sekcja opinii ze zdjęciami klientek.</div></div>
+        </div>
+      </div>
+      <div class="shot">
+        <img src="img/m-01c-home-karuzela-bez-nazw-i-cen.jpg" alt="Karuzela produktów na stronie głównej bez nazw i cen" loading="lazy">
+        <span class="cap">Telefon: karuzela produktów bez nazw i cen</span>
+      </div>
+    </div>
+
+    <div class="group-title"><h3>Listy kategorii</h3></div>
+
+    <div class="issue">
+      <div class="body">
+        <div class="chips"><span class="chip h">Waga wysoka</span><span class="chip dev">Telefon</span></div>
+        <h3>Filtr koloru pokazuje 5 z 23 kolorów, więc nie da się wybrać czarnego ani czekoladowego</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Na liście bluz filtr „Kolor” pokazuje baby blue, baby pink, beżowy, beżowy melanż i blue melanż. Pozostałych 18 kolorów, w tym najliczniejsze czarny (30 bluz), szary melanż (24) i dark chocolate (16), nie da się rozwinąć, bo przycisk „pokaż wszystkie” jest ukryty. Ten sam brąz występuje jako „czekoladowy” i „dark chocolate”. Filtr ceny ma dwa przedziały, z czego jeden obejmuje 171 ze 175 bluz.</div></div>
+          <div class="row"><b>Skutek</b><div>Klientka szukająca czarnej bluzy przewija ponad 170 produktów. 51% sklepów nie ma pięciu kluczowych filtrów, a dla cech wizualnych (kolor) Baymard zaleca filtry z próbkami zamiast samych nazw.<span class="src">Baymard Institute, Product List UX, 2025</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Filtr koloru z próbkami, pogrupowany w rodziny (czerń, brązy, beże, róże, niebieskie). Nazwa marketingowa („dark chocolate”) zostaje na karcie produktu. Cena jako suwak. Filtry działają od razu, bez przycisku „Zastosuj”, i zapisują się w adresie strony, więc wynik można wysłać koleżance.</div></div>
+        </div>
+      </div>
+      <div class="shot">
+        <img src="img/m-14-listing-bluzy-filtr-rozmiar-kolor.jpg" alt="Filtr koloru z pięcioma pozycjami i filtr rozmiaru" loading="lazy">
+        <span class="cap">Telefon: filtry na liście bluz</span>
+      </div>
+    </div>
+
+    <div class="issue wide">
+      <div class="body">
+        <div class="chips"><span class="chip h">Waga wysoka</span><span class="chip dev">Telefon i komputer</span></div>
+        <h3>Każdy kolor jest osobnym produktem o tej samej nazwie, więc lista wygląda na kilka razy dłuższą, niż jest</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Na liście sukienek pięć sąsiednich kart nazywa się „Sukienka zamszowa z paskiem” i różni się tylko kolorem, którego w nazwie nie widać. W wynikach wyszukiwania „komplet dresowy” 10 kart nazywa się „oversizowy komplet”. Na kartach nie ma próbek innych kolorów.</div></div>
+          <div class="row"><b>Skutek</b><div>Pierwsze ekrany zajmuje kilka modeli powielonych w kolorach, więc klientka widzi mniej fasonów i myśli, że to błąd. 42% sklepów nie łączy kolorów w jedną kartę na liście.<span class="src">Baymard Institute, Product List UX, 2025</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Przy migracji każdy model staje się jednym produktem z wyborem koloru i osobnymi zdjęciami dla każdego koloru. Na liście: próbki kolorów pod zdjęciem. Stare adresy kolorów przekieruję na nowy produkt z wybranym kolorem, więc Google i linki z Instagrama dalej działają.</div></div>
+        </div>
+      </div>
+      <div class="shot">
+        <img src="img/d-17-listing-identyczne-nazwy-kolorow.jpg" alt="Lista sukienek z identycznymi nazwami w różnych kolorach" loading="lazy">
+        <span class="cap">Komputer: lista sukienek, ta sama nazwa w kolejnych kolorach</span>
+      </div>
+    </div>
+
+    <div class="issue wide">
+      <div class="body">
+        <div class="chips"><span class="chip m">Waga średnia</span><span class="chip dev">Komputer</span></div>
+        <h3>Na ekranie komputera mieszczą się 3 produkty, a sortowanie jest ostatnią pozycją w panelu filtrów</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Karta produktu na liście ma około 650 px wysokości, więc na typowym ekranie widać trzy produkty. Wszystkie grupy filtrów są zwinięte, zaznaczenie nie działa bez „Zastosuj”, a sortowanie to ostatnia zwinięta pozycja panelu i nie ma w nim opcji „Bestsellery”.</div></div>
+          <div class="row"><b>Skutek</b><div>69% sklepów nie ma czterech kluczowych typów sortowania. W kategoriach wizualnych, jak odzież, Baymard zaleca pokazywać na start znacznie więcej produktów i ładować kolejne przyciskiem.<span class="src">Baymard Institute, Product List UX, 2025; Number of Products to Load by Default, 2020</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Cztery kolumny i niższe karty (zdjęcie, nazwa z kolorem, cena, próbki), sortowanie nad listą z opcją „Bestsellery”, przycisk „Pokaż więcej” zamiast numerów stron.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group-title"><h3>Karta produktu</h3><span>tu zapada decyzja</span></div>
+
+    <div class="issue">
+      <div class="body">
+        <div class="chips"><span class="chip h">Waga wysoka</span><span class="chip dev">Telefon i komputer</span></div>
+        <h3>Sklep ma gotowe informacje o darmowej dostawie i zwrotach, ale ich nie pokazuje</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>W kodzie karty produktu są gotowe komunikaty „Darmowa dostawa od 249 zł”, „16 dni na łatwy zwrot” i termin wysyłki, ale wszystkie są ukryte. Przy cenie widać tylko „ONE SIZE”, przycisk i promocję InPost „Paczkomat 5,99 zł”. Koszty dostawy są w zwiniętej zakładce około czterech ekranów niżej. Próg 249 zł klientka poznaje dopiero po dodaniu produktu do koszyka, a termin „3 do 10 dni roboczych” dopiero w koszyku.</div></div>
+          <div class="row"><b>Skutek</b><div>64% osób szuka kosztu dostawy na karcie produktu, zanim doda coś do koszyka. Zbyt wysokie dodatkowe koszty to przyczyna 40% porzuconych koszyków, a zbyt wolna dostawa 20%. Czas oczekiwania to też najczęstszy wątek w opiniach o WASSYL w sieci.<span class="src">Baymard Institute, 2017 i Cart Abandonment Rate, 2025</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Pod ceną jedna linijka: „Darmowa dostawa od 249 zł · Paczkomat od 13,99 zł · 14 dni na zwrot” z kwotą brakującą do progu liczoną na żywo z koszyka. Termin wysyłki jako data („wyślemy do czwartku”) ustawiany per produkt. Kwoty w ustawieniach sklepu, więc zmienicie je bez programisty.</div></div>
+        </div>
+      </div>
+      <div class="shot">
+        <img src="img/m-29-pdp-x562-sekcja-zakupu-i-akordeony.jpg" alt="Sekcja zakupu bluzy X562 bez informacji o dostawie" loading="lazy">
+        <span class="cap">Telefon: sekcja zakupu bluzy X562, dostawa schowana w zakładce</span>
+      </div>
+    </div>
+
+    <div class="issue">
+      <div class="body">
+        <div class="chips"><span class="chip h">Waga wysoka</span><span class="chip dev">Telefon i komputer</span></div>
+        <h3>Prawie wszystko jest w rozmiarze uniwersalnym, a karta nie mówi, na kogo ten rozmiar pasuje</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>171 ze 175 bluz ma rozmiar uniwersalny. Zakładka „Wymiary” podaje centymetry, ale nie mówi, czy to pomiar na płasko, nie podaje zakresu „pasuje na rozmiary 34 do 42”, a przy bluzie X562 nie ma informacji o modelce (przy innych produktach jest, więc dane istnieją). Ten sam rozmiar nazywa się „ONE SIZE”, „uniwersalny” albo „UNI”. W opinii pod spodniami X561 klientka pisze, że je zwróciła, bo nie było wymiarów i zdjęcia całości od przodu.</div></div>
+          <div class="row"><b>Skutek</b><div>Przy jednym rozmiarze cała decyzja opiera się na wymiarach i zdjęciach. 83% sklepów odzieżowych nie daje wystarczającej informacji o rozmiarze, a rozmiar i dopasowanie to 53% przyczyn zwrotów odzieży.<span class="src">Baymard Institute, Apparel Size Information, 2022; Coresight Research, 2023</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Blok „Dopasowanie” zawsze nad przyciskiem kupna: pasuje na (zakres), wzrost modelki i rozmiar, który nosi na co dzień, wymiary z dopiskiem „na płasko”, jedno zdanie o kroju („oversize, celowo luźny”). Jedna nazwa rozmiaru w całym sklepie. Dane przeniosę z IdoSell automatycznie tam, gdzie już są.</div></div>
+        </div>
+      </div>
+      <div class="shot">
+        <img src="img/m-22-pdp-x562-zakladka-wymiary.jpg" alt="Zakładka wymiary bluzy X562 bez informacji o modelce" loading="lazy">
+        <span class="cap">Telefon: zakładka „Wymiary” bluzy X562</span>
+      </div>
+    </div>
+
+    <div class="issue wide">
+      <div class="body">
+        <div class="chips"><span class="chip m">Waga średnia</span><span class="chip dev">Telefon i komputer</span></div>
+        <h3>Sprzedajecie komplety, a po dodaniu bluzy sklep nie podsuwa spodni do kompletu</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Po dodaniu bluzy X562 okno koszyka pokazuje „Do darmowej dostawy brakuje 109,01 zł” (świetnie), ale pod spodem „Ostatnio oglądane” zamiast pasujących spodni. Na karcie produktu sekcja „Wybrane dla Ciebie” to około 30 produktów w sześciu rzędach, w tym te same modele w innych kolorach. Do strony zestawu z bluzy nie da się przejść.</div></div>
+          <div class="row"><b>Skutek</b><div>Bluza za 139,99 zł plus spodnie z kompletu domykają darmową dostawę od 249 zł. Tylko 42% sklepów poleca jednocześnie produkty podobne i uzupełniające.<span class="src">Baymard Institute, Product Page Suggestions</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Blok „Uzupełnij komplet” wysoko na karcie i w oknie koszyka: druga część kompletu w tym samym kolorze, dodawana jednym kliknięciem, z ceną zestawu. „Podobne” jako krótka karuzela niżej. Więcej w części o funkcjach sprzedażowych.</div></div>
+        </div>
+      </div>
+      <div class="shot">
+        <img src="img/d-30-po-dodaniu-do-koszyka.jpg" alt="Okno po dodaniu bluzy do koszyka z sekcją Ostatnio oglądane" loading="lazy">
+        <span class="cap">Komputer: okno po dodaniu bluzy X562</span>
+      </div>
+    </div>
+
+    <div class="issue wide">
+      <div class="body">
+        <div class="chips"><span class="chip m">Waga średnia</span><span class="chip dev">Telefon i komputer</span></div>
+        <h3>Opinie z oceną 4,8 są schowane w zwiniętej zakładce na dole strony</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Bluza X562 ma 10 opinii ze średnią 4,8, zestaw dresowy 24 opinie, część z oznaczeniem „potwierdzona zakupem”. Przy nazwie i cenie nie ma gwiazdek, opinie są czwartą zwiniętą zakładką pod zdjęciami. Opinie nie mają zdjęć klientek ani pytania o dopasowanie.</div></div>
+          <div class="row"><b>Skutek</b><div>95% osób w testach korzystało z opinii, żeby ocenić produkt, a 48% kupujących odzież szuka w nich informacji o rozmiarze.<span class="src">Baymard Institute, User Reviews i Apparel UX, 2024</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Gwiazdki z liczbą opinii pod nazwą produktu. Opinie ze zdjęciami i oceną dopasowania (za mały, w sam raz, za duży) oraz wzrostem klientki. Automatyczny mail z prośbą o opinię kilka dni po dostawie. Przeniosę wszystkie obecne opinie (szacunkowo około 5 000).</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group-title"><h3>Koszyk i kasa</h3></div>
+
+    <div class="issue">
+      <div class="body">
+        <div class="chips"><span class="chip h">Waga wysoka</span><span class="chip dev">Telefon</span></div>
+        <h3>Okienko czatu zasłania połowę przycisku „Idź do kasy”</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>W koszyku na telefonie dymek czatu „Masz pytanie?” leży na przyklejonym przycisku przejścia do kasy, widać tylko „IDŹ DO”. W kasie ten sam dymek nachodzi na pola formularza.</div></div>
+          <div class="row"><b>Skutek</b><div>Najważniejszy przycisk w sklepie, który widzi każda osoba z produktem w koszyku, jest w połowie zakryty. Google opisuje elementy zasłaniające treść jako frustrujące i obniżające zaufanie.<span class="src">Google Search Central, Avoid intrusive interstitials, 2025</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>W koszyku czat jako mała ikona nad paskiem z przyciskiem. Kasa Shopify jest oddzielona od motywu, więc tam problem znika sam.</div></div>
+        </div>
+      </div>
+      <div class="shot">
+        <img src="img/m-25-koszyk-czat-zaslania-pasek-kasy.jpg" alt="Czat zasłaniający przycisk Idź do kasy" loading="lazy">
+        <span class="cap">Telefon: koszyk, przycisk przejścia do kasy</span>
+      </div>
+    </div>
+
+    <div class="issue wide">
+      <div class="body">
+        <div class="chips"><span class="chip m">Waga średnia</span><span class="chip dev">Telefon i komputer</span></div>
+        <h3>Paczkomat, który wybiera większość Polaków, jest na końcu listy i jest najdroższy</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Kolejność dostaw w kasie: DPD Automat 9,99 zł, DPD Punkt 11,99 zł, ORLEN Paczka 11,99 zł, InPost Paczkomat 13,99 zł. W koszyku suma „do zapłaty” to 149,98 zł, a w kasie 139,99 zł, dopóki nie wybierze się dostawy. Zgoda na newsletter ma gwiazdkę, jakby była obowiązkowa, a etykiety pól są ucięte („kod poczto…”).</div></div>
+          <div class="row"><b>Skutek</b><div>83% kupujących w Polsce wybiera automaty paczkowe, z czego 87% InPost. 12% porzuceń wynika z tego, że nie dało się z góry policzyć całkowitego kosztu.<span class="src">Gemius 2025 za Przelewy24; Baymard Institute, Cart Abandonment Rate, 2025</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Kasa Shopify: etykiety pól, jedna dobrowolna zgoda marketingowa i stała suma z dostawą. InPost na pierwszym miejscu z wyborem punktu. Ceny dostaw do przemyślenia razem z Wami na rozmowie.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group-title"><h3>Spójność informacji</h3></div>
+
+    <div class="issue wide">
+      <div class="body">
+        <div class="chips"><span class="chip m">Waga średnia</span><span class="chip dev">Cały sklep</span></div>
+        <h3>W różnych miejscach sklep podaje różne ceny dostawy i terminy zwrotu</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Paczkomat kosztuje 17,99 zł na stronie „Wysyłka” i 13,99 zł na karcie produktu, a pasek u góry obiecuje dostawę za 5,99 zł z InPost Pay. Termin zwrotu to 14 dni w regulaminie i FAQ, ale 16 dni w danych dla Google i w ukrytym bloku karty. Zwrot pieniędzy to „1 do 3 dni” na karcie i „14 dni” w FAQ. FAQ mówi, że wymian nie ma, a w stopce jest link „Chcę wymienić towar”.</div></div>
+          <div class="row"><b>Skutek</b><div>Sprzeczne liczby budzą nieufność dokładnie w chwili, gdy klientka zastanawia się nad ryzykiem zakupu. Jasna informacja o zwrotach to drugie najczęstsze źródło zaufania do sklepu w Polsce (28%).<span class="src">Gemius, E-commerce w Polsce 2024</span></div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Przy migracji jedno źródło prawdy: koszty dostawy, termin zwrotu i próg darmowej dostawy wpisane raz w ustawieniach i wyświetlane wszędzie z tego samego miejsca: na karcie, w koszyku, w FAQ i w danych dla Google.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group-title"><h3>Widoczność w Google</h3></div>
+
+    <div class="issue wide">
+      <div class="body">
+        <div class="chips"><span class="chip l">Waga drobna</span><span class="chip dev">SEO</span></div>
+        <h3>Strona główna nie ma nagłówka H1, a większość kategorii ma ten sam opis dla Google</h3>
+        <div class="rows">
+          <div class="row"><b>Co widać</b><div>Brak nagłówka H1 na stronie głównej. Kategorie bluzy, sukienki, komplety i nowości mają ten sam opis („Wassyl.pl oferuje sukienki, bluzki, spódnice…”). Kategorie mają dwa rodzaje adresów (przyjazne i stare z numerami), a menu linkuje do starych, które przekierowują dalej. W nazwach produktów są kody magazynowe (np. „X735 K01”). Strona blokuje też powiększanie palcami na telefonie.</div></div>
+          <div class="row"><b>Skutek</b><div>Google gorzej rozumie, o czym jest strona główna i czym różnią się kategorie, a powtarzające się opisy osłabiają ich pozycję w wynikach wyszukiwania.</div></div>
+          <div class="row fix"><b>Rozwiązanie</b><div>Unikalny nagłówek i opis dla każdej kategorii, nazwy handlowe bez kodów (kod zostaje w SKU), jeden schemat adresów i pełna mapa przekierowań. Zachowam też dobre rzeczy, które już macie: bogate dane produktów dla Google (cena, ocena, zwroty, dostawa).</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="pb">
+    <p class="eyebrow">Funkcje podnoszące sprzedaż</p>
+    <h2>Komplety, próg darmowej dostawy i wideo to Wasza największa szansa na wyższy koszyk</h2>
+    <div class="prose"><p>Poza naprawą problemów proponuję funkcje dopasowane do tego, jak sprzedajecie: komplety, jeden rozmiar, dużo wideo i ruch z TikToka.</p></div>
+    <div class="features">
+      <div class="feature"><h3>Uzupełnij komplet</h3><p>Na karcie bluzy od razu spodnie w tym samym kolorze, dodawane jednym kliknięciem, z ceną zestawu. To samo w oknie koszyka po dodaniu produktu.</p><p class="why">Bluza 139,99 zł + spodnie z kompletu przekraczają próg darmowej dostawy 249 zł.</p></div>
+      <div class="feature"><h3>Pasek progu z podpowiedzią</h3><p>Pasek „brakuje Ci X zł” z 2-3 tańszymi produktami, które domykają próg. Gotowe rozwiązanie mam już wdrożone u innego klienta.</p><p class="why">Zestaw dresowy kosztuje 242,99 zł, czyli 6,01 zł poniżej progu. Bluzka za 49,99 zł zamienia to w darmową dostawę.</p></div>
+      <div class="feature"><h3>Kolory na jednej karcie</h3><p>Jeden model, wszystkie kolory jako próbki, zdjęcia zmieniają się po kliknięciu. Na liście kategorii próbki pod zdjęciem.</p><p class="why">Krótsza, czytelniejsza lista i więcej różnych fasonów na pierwszym ekranie.</p></div>
+      <div class="feature"><h3>Blok „Dopasowanie”</h3><p>Pasuje na, wzrost modelki, wymiary na płasko i krótka notka o kroju, zawsze nad przyciskiem kupna.</p><p class="why">Mniej zwrotów z powodu rozmiaru, który odpowiada za 53% zwrotów odzieży.</p></div>
+      <div class="feature"><h3>Opinie ze zdjęciami i dopasowaniem</h3><p>Gwiazdki przy nazwie, zdjęcia klientek, ocena „za mały, w sam raz, za duży”, automatyczna prośba o opinię po dostawie.</p><p class="why">Zdjęcia klientek w Waszych ubraniach to najmocniejszy dowód jakości, który już macie na Instagramie.</p></div>
+      <div class="feature"><h3>Wideo i #TEAMWASSYL na karcie</h3><p>Dziś wideo jest w menu i na stronie głównej, a w galerii produktów go nie ma. Na Shopify filmy z TikToka i od twórczyń trafiają prosto na kartę produktu.</p><p class="why">Ruch z TikToka (70 tys. obserwujących) trafia na kartę, która wygląda jak to, co klientka przed chwilą oglądała.</p></div>
+      <div class="feature"><h3>Szybsza kasa z Shop Pay</h3><p>Klientka, która kupowała już w dowolnym sklepie na Shopify, płaci jednym kliknięciem. Do tego BLIK, Apple Pay, Google Pay i PayPo.</p><p class="why">Według Shopify Shop Pay ma do 50% wyższą konwersję niż zakup jako gość (badanie na zlecenie Shopify, 2023).</p></div>
+      <div class="feature"><h3>Sprzedaż na Instagramie, TikToku i w Google</h3><p>Katalog synchronizuje się sam z kanałami Meta, TikTok oraz Google, bez ręcznego przygotowywania plików z produktami.</p><p class="why">Mniej pracy przy kampaniach i zawsze aktualne ceny oraz dostępność w reklamach.</p></div>
+      <div class="feature"><h3>Powrót na rynek niemiecki</h3><p>Wcześniej sprzedawaliście w Niemczech i Austrii. Shopify Markets dodaje kraj, walutę i język w tym samym sklepie, bez drugiej platformy.</p><p class="why">Opcja na później, gotowa w momencie, gdy zechcecie ją włączyć.</p></div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="pb">
+    <p class="eyebrow">Migracja z IdoSell</p>
+    <h2>Przeniosę sklep bez utraty ruchu z Google, opinii i historii klientów</h2>
+    <div class="prose"><p>Skalę policzyłem z publicznej mapy strony i próbki kart produktów. Dokładne liczby klientów i zamówień ustalimy po eksporcie z Waszego panelu.</p></div>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Co przenosimy</th><th>Skala</th><th>Jak</th></tr></thead>
+        <tbody>
+          <tr><td>Produkty</td><td class="n">ok. 3 470 adresów</td><td>Kolory łączę w warianty jednego modelu, ze zdjęciami przypisanymi do koloru</td></tr>
+          <tr><td>Zdjęcia</td><td class="n">ok. 16 000</td><td>Automatycznie, w pełnej jakości, z opisami alternatywnymi</td></tr>
+          <tr><td>Zestawy</td><td class="n">142</td><td>Natywne zestawy Shopify z ceną zestawu</td></tr>
+          <tr><td>Kategorie, serie, listy</td><td class="n">ok. 110</td><td>Nowa, prostsza struktura kolekcji z filtrami</td></tr>
+          <tr><td>Opinie</td><td class="n">ok. 5 000</td><td>Import do systemu opinii z zachowaniem dat i ocen</td></tr>
+          <tr><td>Klienci i historia zamówień</td><td class="n">z eksportu</td><td>Bez wysyłania jakiegokolwiek maila do klientów i bez ruszania stanów magazynowych</td></tr>
+          <tr><td>Przekierowania</td><td class="n">ok. 3 650</td><td>Każdy stary adres prowadzi na właściwy nowy, także stare wersje adresów produktów</td></tr>
+          <tr><td>Blog i strony</td><td class="n">60 wpisów, ok. 12 stron</td><td>Treści, regulaminy i polityki z ujednoliconymi danymi</td></tr>
+          <tr><td>Pomiar i reklamy</td><td class="n">GA4, GTM, Meta, TikTok, Google Ads</td><td>Ponowne podpięcie i sprawdzenie, że konwersje liczą się od pierwszego dnia</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Mam za sobą migrację z IdoSell na Shopify w tej skali</h3>
+    <div class="prose"><p>Dla marki Oromatcha przeniosłem ze sklepu IdoSell całą bazę klientów i historię zamówień. Wynik zweryfikowałem rekord po rekordzie:</p></div>
+    <div class="case">
+      <div><span class="big">24 492</span><p>klientów przeniesionych</p></div>
+      <div><span class="big">33 885</span><p>zamówień historycznych (44 067 pozycji)</p></div>
+      <div><span class="big">0</span><p>braków, duplikatów i nadmiarowych rekordów</p></div>
+      <div><span class="big">0</span><p>maili wysłanych do klientów podczas importu</p></div>
+    </div>
+    <div class="keep">
+      <div><b>Bezpiecznie dla magazynu</b>Import historii nie zmienił ani jednego stanu magazynowego.</div>
+      <div><b>Szybciej i lżej</b>Karta produktu na telefonie: 79 punktów PageSpeed na Shopify wobec 24 na poprzednim sklepie IdoSell.</div>
+      <div><b>Nowe funkcje</b>Filtry po cechach produktu, prezent i darmowa dostawa po przekroczeniu progu w koszyku, FAQ przy produktach, panel dla klientów hurtowych.</div>
+    </div>
+    <p class="src">Nowy sklep Oromatcha: <a href="https://oromatcha-shop.myshopify.com" target="_blank" rel="noopener">oromatcha-shop.myshopify.com</a> · poprzednia wersja na IdoSell: <a href="https://web.archive.org/web/20260517210409/https://oromatcha.com/" target="_blank" rel="noopener">archiwum z maja 2026</a>.</p>
+  </section>
+
+  <!-- 7 -->
+  <section class="pb">
+    <p class="eyebrow">Koszty platformy</p>
+    <h2>Motyw to koszt jednorazowy, a abonament Shopify nie rośnie z liczbą zamówień</h2>
+    <div class="prose"><p>To koszty po Waszej stronie, płacone bezpośrednio do Shopify i dostawców aplikacji. Ceny sprawdziłem 17.10.2026, kwoty w dolarach przeliczyłem po kursie NBP (1 USD = 3,88 zł).</p></div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Jednorazowo</th><th>Koszt</th><th>Uwagi</th></tr></thead>
+        <tbody>
+          <tr><td>Motyw premium <b>Prestige</b> (polecam)</td><td class="n">400 USD · ok. 1 550 zł</td><td>Stworzony dla marek modowych: mega menu, filtry z próbkami kolorów, szybkie dodawanie do koszyka. Wdrażałem go w sklepie z modą damską.</td></tr>
+          <tr><td>Alternatywa: <b>Be Yours</b></td><td class="n">350 USD · ok. 1 360 zł</td><td>Tańszy, również sprawdzony przeze mnie we wdrożeniu.</td></tr>
+          <tr><td>Darmowy motyw Shopify (np. <b>Horizon</b>)</td><td class="n">0 zł</td><td>Mniej gotowych funkcji, więc mega menu, filtry z próbkami czy szybkie dodawanie muszę zbudować od podstaw. Oszczędność na motywie oznacza dłuższe wdrożenie.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Miesięcznie</th><th>Wariant podstawowy</th><th>Wariant polecany</th></tr></thead>
+        <tbody>
+          <tr><td>Plan Shopify (płatność roczna)</td><td class="n">Basic · 79 zł</td><td class="n">Grow · 239 zł</td></tr>
+          <tr><td>Lista ulubionych</td><td class="n">0 zł</td><td class="n">ok. 113 zł</td></tr>
+          <tr><td>Punkty odbioru InPost, DPD, ORLEN</td><td class="n">ok. 39 zł</td><td class="n">ok. 58 zł</td></tr>
+          <tr><td>Zamówienia, etykiety, faktury</td><td colspan="2">Integracja z systemem, w którym dziś obsługujecie zamówienia i magazyn (np. Base). Koszt zależy od Waszej obecnej umowy.</td></tr>
+          <tr class="total"><td>Razem</td><td class="n">ok. 118 zł</td><td class="n">ok. 410 zł</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="src">Do obu wariantów dochodzi e-mail marketing (możecie zostać przy edrone, ma integrację z Shopify). Ceny netto.</p>
+
+    <div class="callout">
+      <b class="t">Uczciwie o porównaniu z IdoSell</b>
+      <p>Przy obecnej bramce PayU koszt platformy na Shopify Grow wychodzi zbliżony do IdoSell, bo Shopify pobiera wtedy 1% od obrotu. Różnica pojawia się przy Shopify Payments (z BLIK, kartami, Apple Pay i Google Pay): znika opłata od obrotu, nie ma opłat od zamówienia, a koszt platformy zostaje stały niezależnie od tego, ile zamówień obsłużycie. Część funkcji, które IdoSell ma w pakiecie (program lojalnościowy, lista ulubionych, moduł zwrotów), na Shopify jest osobną aplikacją. Dlatego nie przekonuję Was ceną platformy, tylko tym, ile sklep sprzeda.</p>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="pb">
+    <p class="eyebrow">Jak to przebiegnie</p>
+    <h2>Nowy sklep w około 6 tygodni, bez przerwy w sprzedaży</h2>
+    <div class="timeline">
+      <div class="step"><span class="when">Tydzień 1</span><div><p>Struktura kategorii, makiety najważniejszych stron (najpierw telefon), decyzje o kolorach i dostawach.</p><p>Akceptujecie układ, zanim powstanie jakikolwiek kod.</p></div></div>
+      <div class="step"><span class="when">Tydzień 2-4</span><div><p>Wdrożenie motywu i funkcji sprzedażowych, próbna migracja produktów, opinii i klientów na kopii sklepu.</p><p>Obecny sklep działa normalnie przez cały czas.</p></div></div>
+      <div class="step"><span class="when">Tydzień 5</span><div><p>Testy na prawdziwych telefonach, zamówienia testowe, pomiar szybkości, mapa przekierowań.</p><p>Sprawdzam każdą ścieżkę zakupu, płatność i dostawę.</p></div></div>
+      <div class="step"><span class="when">Tydzień 6</span><div><p>Końcowa migracja danych, przepięcie domeny w godzinach najmniejszego ruchu, kontrola konwersji w GA4 i reklamach.</p><p>Potem 30 dni opieki i poprawek po starcie.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section>
+    <div class="cta">
+      <p class="eyebrow" style="color:#BDBDBD">Następny krok</p>
+      <h2>Porozmawiajmy 30 minut</h2>
+      <p>Na rozmowie przejdę z Wami ten audyt na żywo na Waszym sklepie, odpowiem na pytania o migrację i ustalimy zakres. Koszt mojej pracy przedstawię po rozmowie, dopasowany do tego, co wybierzecie. Prace spoza ustalonego zakresu rozliczam osobno po stawce godzinowej, zawsze po Waszej akceptacji wyceny.</p>
+      <div class="contact">
+        <span>Igor Pieczyński</span>
+        <span>igor.shopifydev@gmail.com</span>
+        <span>+48 792 828 884</span>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
